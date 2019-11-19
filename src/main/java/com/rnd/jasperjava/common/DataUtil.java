@@ -4,6 +4,9 @@ import com.rnd.jasperjava.model.AdjustmentData;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +45,16 @@ public class DataUtil {
         parameterMap.put(ApplicationConstant.USER, "Ina");
         parameterMap.put(ApplicationConstant.ACTIVITY, "THP");
         parameterMap.put(ApplicationConstant.REPORT_PATH, getReportPath(templateName));
+        parameterMap.put(ApplicationConstant.ADJUSTMENT_CODE, "XXX123XXXSD4J");
         return parameterMap;
     }
 
-    private static Resource getReportPath(String templateName) {
-        return new ClassPathResource(templateName);
+    private static String getReportPath(String templateName) {
+        try {
+            Resource resource = new ClassPathResource(templateName);
+            return Paths.get(resource.getURI()).toString();
+        } catch (IOException e) {
+            return "";
+        }
     }
 }

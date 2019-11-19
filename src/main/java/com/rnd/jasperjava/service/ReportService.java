@@ -4,7 +4,6 @@ import com.rnd.jasperjava.exception.ReportException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 public interface ReportService {

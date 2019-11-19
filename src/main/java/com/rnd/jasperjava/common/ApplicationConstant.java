@@ -13,4 +13,5 @@ public class ApplicationConstant {
     public static final String SOURCE_LOC = "SOURCE_LOC";
     public static final String DATASOURCE = "DATASOURCE";
     public static final String PATH_OUTPUT = "PATH_OUTPUT";
+    public static final String ADJUSTMENT_CODE = "ADJUSTMENT_CODE";
 }
