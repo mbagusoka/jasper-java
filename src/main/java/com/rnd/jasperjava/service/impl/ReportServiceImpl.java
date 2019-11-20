@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -27,12 +28,12 @@ public class ReportServiceImpl implements ReportService {
     public void generateReport(Map<String, Object> parameters) throws ReportException {
         validateParameter(parameters);
         try {
-            String pathOutput = parameters.get(ApplicationConstant.PATH_OUTPUT).toString();
-            parameters.remove(ApplicationConstant.PATH_OUTPUT);
-            String reportPath = parameters.get(ApplicationConstant.REPORT_PATH).toString();
-            parameters.remove(ApplicationConstant.REPORT_PATH);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reportPath, parameters, new JREmptyDataSource());
-            exportToPdf(pathOutput, jasperPrint);
+            JasperPrint jasperPrint = getReportPrint(parameters);
+            if (isOutputByteArray(parameters)) {
+                exportToByteArray(parameters, jasperPrint);
+            } else {
+                exportToPdf(parameters, jasperPrint);
+            }
         } catch (JRException e) {
             LOGGER.error("JRException: ", e);
         } catch (Exception e) {
@@ -40,7 +41,29 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private void exportToPdf(String pathOutput, JasperPrint jasperPrint) throws JRException {
+    private boolean isOutputByteArray(Map<String, Object> parameters) {
+        return parameters.containsKey(ApplicationConstant.BYTE_ARRAY);
+    }
+
+    private JasperPrint getReportPrint(Map<String, Object> parameters) throws JRException {
+        String reportPath = parameters.get(ApplicationConstant.REPORT_PATH).toString();
+        parameters.remove(ApplicationConstant.REPORT_PATH);
+        return JasperFillManager.fillReport(reportPath, parameters, new JREmptyDataSource());
+    }
+
+    private void exportToByteArray(Map<String, Object> parameters, JasperPrint jasperPrint) throws JRException {
+        parameters.remove(ApplicationConstant.BYTE_ARRAY);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JRPdfExporter exporter = new JRPdfExporter();
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+        exporter.exportReport();
+        parameters.put(ApplicationConstant.RESULT, outputStream.toByteArray());
+    }
+
+    private void exportToPdf(Map<String, Object> parameters, JasperPrint jasperPrint) throws JRException {
+        String pathOutput = parameters.get(ApplicationConstant.PATH_OUTPUT).toString();
+        parameters.remove(ApplicationConstant.PATH_OUTPUT);
         JRPdfExporter exporter = new JRPdfExporter();
         exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
         exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pathOutput));
@@ -58,9 +81,6 @@ public class ReportServiceImpl implements ReportService {
         }
         if (!parameters.containsKey(ApplicationConstant.DATASOURCE)) {
             throw new ReportException("Data source is empty");
-        }
-        if (!parameters.containsKey(ApplicationConstant.PATH_OUTPUT)) {
-            throw new ReportException("Path output is empty");
         }
     }
 }
