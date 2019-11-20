@@ -24,6 +24,8 @@ import java.util.Optional;
 @RestController
 public class ReportController {
 
+    private static final String ATTACHMENT_FILENAME = "attachment; filename=";
+
     @Value("${report.output}")
     private String reportOutput;
 
@@ -49,7 +51,7 @@ public class ReportController {
         byte[] reportRaw = (byte[]) parameterMap.get(ApplicationConstant.RESULT);
         ByteArrayResource resource = new ByteArrayResource(reportRaw);
         HttpHeaders headers = new HttpHeaders();
-        String fileNameContent = "attachment; filename=" + parameterMap.get(ApplicationConstant.FILE_NAME).toString();
+        String fileNameContent = ATTACHMENT_FILENAME + parameterMap.get(ApplicationConstant.FILE_NAME).toString();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, fileNameContent);
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
