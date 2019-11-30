@@ -53,7 +53,6 @@ public class ReportUtil {
         parameterMap.put(ApplicationConstant.USER, "Ina");
         parameterMap.put(ApplicationConstant.ACTIVITY, "THP");
         parameterMap.put(ApplicationConstant.REPORT_PATH, pathReport);
-        parameterMap.put(ApplicationConstant.ADJUSTMENT_CODE, "XXX123XXXSD4J");
         parameterMap.put(ApplicationConstant.FILE_NAME, fileName);
         return parameterMap;
     }

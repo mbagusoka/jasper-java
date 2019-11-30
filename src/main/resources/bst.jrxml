@@ -57,7 +57,6 @@
 	<parameter name="DOC_DATE" class="java.lang.String"/>
 	<parameter name="USER" class="java.lang.String"/>
 	<parameter name="ACTIVITY" class="java.lang.String"/>
-	<parameter name="ADJUSTMENT_CODE" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -179,7 +178,7 @@
 			<componentElement>
 				<reportElement x="469" y="0" width="86" height="40" uuid="2814713f-9265-4830-932a-d0cc609d0180"/>
 				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
-					<jr:codeExpression><![CDATA[$P{ADJUSTMENT_CODE}]]></jr:codeExpression>
+					<jr:codeExpression><![CDATA[$P{DOC_NO}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
 		</band>
